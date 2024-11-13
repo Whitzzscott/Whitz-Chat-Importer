@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whitzscott's HTML</title>
+    <title>Offline Chat</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
