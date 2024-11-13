@@ -3,14 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Join and Support</title>
   <style>
-    :root{
-      background-color: wheat;
+    :root {
+      --background-color: #f4e1c1;
+      --text-color: #333;
+      --button-color: #4CAF50;
+      --button-hover: #45a049;
+      --font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      font-family: var(--font-family);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .content {
+      max-width: 800px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      animation: fadeIn 1s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .cta-buttons a {
+      text-decoration: none;
+      background-color: var(--button-color);
+      color: white;
+      padding: 12px 2px;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .cta-buttons a:hover {
+      background-color: var(--button-hover);
     }
   </style>
 </head>
 <body>
-  <h1> if you Love this extension Please Join my Discord Channel or Give this Github Repo A star xD!</h1>
+  <div class="content">
+    <h1>If you love this extension, please join my Discord channel or give this GitHub repo a star xD!</h1>
+    <div class="cta-buttons">
+      <a href="https://discord.com" target="_blank">Join Discord</a>
+      <a href="https://github.com" target="_blank">Give a Star on GitHub</a>
+    </div>
+  </div>
 </body>
 </html>
