@@ -27,6 +27,8 @@
         type: 'CHATS_EXTRACTED',
         data: topChatContents
       });
+    } else {
+      alert('No chat messages found. Please check the page structure.');
     }
   }
 
@@ -78,6 +80,19 @@
   });
   document.body.appendChild(uploadButton);
 
+  const progressBar = document.createElement('div');
+  progressBar.style.position = 'fixed';
+  progressBar.style.bottom = '120px';
+  progressBar.style.right = '20px';
+  progressBar.style.width = '0';
+  progressBar.style.height = '5px';
+  progressBar.style.backgroundColor = '#4CAF50';
+  progressBar.style.transition = 'width 0.3s ease';
+  document.body.appendChild(progressBar);
+
+  let isPaused = false;
+  let interval = 10000;
+
   uploadButton.addEventListener('click', () => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -86,21 +101,26 @@
 
     fileInput.addEventListener('change', (event) => {
       const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          let fileContent = e.target.result;
-
-          fileContent = fileContent.replace(/<p[^>]*>|<\/p>/gi, '');
-          const listItems = fileContent.match(/<li[^>]*>(.*?)<\/li>/gi) || [];
-          const chatMessages = listItems.map(item => item.replace(/<li[^>]*>|<\/li>/gi, '').trim()).filter(msg => msg.length > 0);
-
-          if (chatMessages.length > 0) {
-            sendMessages(chatMessages.reverse());
-          }
-        };
-        reader.readAsText(file);
+      if (!file) {
+        alert('No file selected.');
+        return;
       }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        let fileContent = e.target.result;
+
+        fileContent = fileContent.replace(/<p[^>]*>|<\/p>/gi, '');
+        const listItems = fileContent.match(/<li[^>]*>(.*?)<\/li>/gi) || [];
+        const chatMessages = listItems.map(item => item.replace(/<li[^>]*>|<\/li>/gi, '').trim()).filter(msg => msg.length > 0);
+
+        if (chatMessages.length > 0) {
+          sendMessages(chatMessages.reverse());
+        } else {
+          alert('No valid chat messages found in the file.');
+        }
+      };
+      reader.readAsText(file);
     });
 
     document.body.appendChild(fileInput);
@@ -112,7 +132,7 @@
   setIntervalButton.textContent = 'Set Sending Message Interval';
   Object.assign(setIntervalButton.style, {
     position: 'fixed',
-    bottom: '140px',
+    bottom: '160px',
     right: '20px',
     padding: '10px 20px',
     backgroundColor: '#FF9800',
@@ -130,8 +150,6 @@
     setIntervalButton.style.transform = 'scale(1)';
   });
   document.body.appendChild(setIntervalButton);
-
-  let interval = 10000;
 
   setIntervalButton.addEventListener('click', () => {
     let userInterval = prompt('Enter the interval in seconds for each message (default is 10s):');
@@ -153,19 +171,55 @@
       let messageIndex = 0;
 
       function sendMessage() {
+        if (isPaused || messageIndex >= chatMessages.length) return;
+
+        const message = chatMessages[messageIndex];
+        textArea.value = message;
+        textArea.dispatchEvent(new Event('input', { bubbles: true }));
+
+        continueButton.click();
+        messageIndex++;
+
+        progressBar.style.width = `${(messageIndex / chatMessages.length) * 100}%`;
+
         if (messageIndex < chatMessages.length) {
-          const message = chatMessages[messageIndex];
-          textArea.value = message;
-          textArea.dispatchEvent(new Event('input', { bubbles: true }));
-
-          continueButton.click();
-          messageIndex++;
-
           setTimeout(sendMessage, interval);
+        } else {
+          alert('All messages sent successfully!');
         }
       }
 
       sendMessage();
+    } else {
+      alert('Message input or send button not found.');
     }
   }
+
+  const pauseButton = document.createElement('button');
+  pauseButton.textContent = 'Pause/Resume Sending';
+  Object.assign(pauseButton.style, {
+    position: 'fixed',
+    bottom: '200px',
+    right: '20px',
+    padding: '10px 20px',
+    backgroundColor: '#f44336',
+    color: 'white',
+    fontSize: '16px',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease, transform 0.2s',
+  });
+  pauseButton.addEventListener('mouseenter', () => {
+    pauseButton.style.transform = 'scale(1.1)';
+  });
+  pauseButton.addEventListener('mouseleave', () => {
+    pauseButton.style.transform = 'scale(1)';
+  });
+  document.body.appendChild(pauseButton);
+
+  pauseButton.addEventListener('click', () => {
+    isPaused = !isPaused;
+    pauseButton.textContent = isPaused ? 'Resume Sending' : 'Pause Sending';
+  });
 })();
