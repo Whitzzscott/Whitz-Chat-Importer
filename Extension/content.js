@@ -1,6 +1,17 @@
 (function() {
   function extractChats() {
-    const chatElements = document.querySelectorAll('div.mt-1.max-w-xl.rounded-2xl.px-3.min-h-12.flex.justify-center.py-3.bg-surface-elevation-3');
+    const chatElements = [
+      ...document.querySelectorAll('div.mt-1.max-w-xl.rounded-2xl.px-3.min-h-12.flex.justify-center.py-3.bg-surface-elevation-3'),
+      ...document.querySelectorAll('div.mb-8.flex.w-full.flex-1.flex-col.gap-2\\.5'),
+      ...document.querySelectorAll('div.css-0')
+    ];
+
+    console.log('Found chat elements:', chatElements);
+
+    if (chatElements.length === 0) {
+      console.warn('No chat elements found. Check if the selectors match the current page structure.');
+    }
+
     const chatContents = new Set();
 
     chatElements.forEach(chat => {
@@ -15,6 +26,8 @@
       }
     });
 
+    console.log('Extracted chat contents:', chatContents);
+
     const topChatContents = Array.from(chatContents).slice(0, 10);
 
     if (topChatContents.length > 0) {
@@ -22,6 +35,8 @@
         type: 'CHATS_EXTRACTED',
         data: topChatContents
       });
+    } else {
+      console.warn('No chat content extracted. Verify if the chat structure matches the selectors.');
     }
   }
 
