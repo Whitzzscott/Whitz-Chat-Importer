@@ -91,10 +91,10 @@
   messageCounter.style.border = 'none';
   messageCounter.style.borderRadius = '5px';
   messageCounter.style.textAlign = 'center';
+  messageCounter.style.display = 'none';
   messageCounter.textContent = 'Messages Left: 0';
   document.body.appendChild(messageCounter);
 
-  let isPaused = false;
   let interval = 10000;
 
   uploadButton.addEventListener('click', () => {
@@ -119,6 +119,7 @@
         const chatMessages = listItems.map(item => item.replace(/<li[^>]*>|<\/li>/gi, '').trim()).filter(msg => msg.length > 0);
 
         if (chatMessages.length > 0) {
+          messageCounter.style.display = 'block';
           sendMessages(chatMessages.reverse());
         } else {
           alert('No valid chat messages found in the file.');
@@ -175,7 +176,11 @@
       let messageIndex = 0;
 
       function sendMessage() {
-        if (isPaused || messageIndex >= chatMessages.length) return;
+        if (messageIndex >= chatMessages.length) {
+          alert('All messages sent successfully!');
+          messageCounter.style.display = 'none';
+          return;
+        }
 
         const message = chatMessages[messageIndex];
         textArea.value = message;
@@ -186,11 +191,7 @@
 
         messageCounter.textContent = `Messages Left: ${chatMessages.length - messageIndex}`;
 
-        if (messageIndex < chatMessages.length) {
-          setTimeout(sendMessage, interval);
-        } else {
-          alert('All messages sent successfully!');
-        }
+        setTimeout(sendMessage, interval);
       }
 
       sendMessage();
@@ -198,32 +199,4 @@
       alert('Message input or send button not found.');
     }
   }
-
-  const pauseButton = document.createElement('button');
-  pauseButton.textContent = 'Pause/Resume Sending';
-  Object.assign(pauseButton.style, {
-    position: 'fixed',
-    bottom: '200px',
-    right: '20px',
-    padding: '10px 20px',
-    backgroundColor: '#f44336',
-    color: 'white',
-    fontSize: '16px',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease, transform 0.2s',
-  });
-  pauseButton.addEventListener('mouseenter', () => {
-    pauseButton.style.transform = 'scale(1.1)';
-  });
-  pauseButton.addEventListener('mouseleave', () => {
-    pauseButton.style.transform = 'scale(1)';
-  });
-  document.body.appendChild(pauseButton);
-
-  pauseButton.addEventListener('click', () => {
-    isPaused = !isPaused;
-    pauseButton.textContent = isPaused ? 'Resume Sending' : 'Pause Sending';
-  });
 })();
