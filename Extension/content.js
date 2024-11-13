@@ -80,15 +80,19 @@
   });
   document.body.appendChild(uploadButton);
 
-  const progressBar = document.createElement('div');
-  progressBar.style.position = 'fixed';
-  progressBar.style.bottom = '120px';
-  progressBar.style.right = '20px';
-  progressBar.style.width = '0';
-  progressBar.style.height = '5px';
-  progressBar.style.backgroundColor = '#4CAF50';
-  progressBar.style.transition = 'width 0.3s ease';
-  document.body.appendChild(progressBar);
+  const messageCounter = document.createElement('div');
+  messageCounter.style.position = 'fixed';
+  messageCounter.style.bottom = '120px';
+  messageCounter.style.right = '20px';
+  messageCounter.style.padding = '10px 20px';
+  messageCounter.style.backgroundColor = '#FF9800';
+  messageCounter.style.color = 'white';
+  messageCounter.style.fontSize = '16px';
+  messageCounter.style.border = 'none';
+  messageCounter.style.borderRadius = '5px';
+  messageCounter.style.textAlign = 'center';
+  messageCounter.textContent = 'Messages Left: 0';
+  document.body.appendChild(messageCounter);
 
   let isPaused = false;
   let interval = 10000;
@@ -180,7 +184,7 @@
         continueButton.click();
         messageIndex++;
 
-        progressBar.style.width = `${(messageIndex / chatMessages.length) * 100}%`;
+        messageCounter.textContent = `Messages Left: ${chatMessages.length - messageIndex}`;
 
         if (messageIndex < chatMessages.length) {
           setTimeout(sendMessage, interval);
