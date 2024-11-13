@@ -1,7 +1,7 @@
 (function() {
   function extractChats() {
     const chatElements = document.querySelectorAll('div.mt-1.max-w-xl.rounded-2xl.px-3.min-h-12.flex.justify-center.py-3.bg-surface-elevation-3');
-    const chatContents = new Set(); // Using a Set to automatically remove duplicates
+    const chatContents = new Set();
 
     chatElements.forEach(chat => {
       const pTag = chat.querySelector('p[node]');
@@ -15,10 +15,12 @@
       }
     });
 
-    if (chatContents.size > 0) {
+    const topChatContents = Array.from(chatContents).slice(0, 10);
+
+    if (topChatContents.length > 0) {
       chrome.runtime.sendMessage({
         type: 'CHATS_EXTRACTED',
-        data: Array.from(chatContents)
+        data: topChatContents
       });
     }
   }
@@ -71,7 +73,7 @@
           const chatMessages = listItems.map(item => item.replace(/<li[^>]*>|<\/li>/gi, '').trim()).filter(msg => msg.length > 0);
 
           if (chatMessages.length > 0) {
-            sendMessages(chatMessages);
+            sendMessages(chatMessages.reverse());
           }
         };
         reader.readAsText(file);
