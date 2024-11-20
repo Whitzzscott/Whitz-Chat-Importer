@@ -3,12 +3,22 @@
     const chatElements = [
       ...document.querySelectorAll('div.mt-1.max-w-xl.rounded-2xl.px-3.min-h-12.flex.justify-center.py-3.bg-surface-elevation-3'),
       ...document.querySelectorAll('div.mb-8.flex.w-full.flex-1.flex-col.gap-2\\.5'),
-      ...document.querySelectorAll('div.css-0')
+      ...document.querySelectorAll('div.css-0'),
+      ...document.querySelectorAll('[data-testid="completed-message"]')
     ];
 
     const chatContents = new Set();
 
-    chatElements.forEach(chat => {
+    const extractChatContent = (chat) => {
+      const isSwiperSlide = ['swiper-slide', 'swiper-slide-visible', 
+                            'swiper-slide-fully-visible', 'swiper-slide-active']
+                            .every(className => chat.classList.contains(className));
+      
+      const aiIndicator = chat.querySelector('div.rounded-2xl.text-sm.bg-secondary.px-2.font-light.h-fit');
+      if (aiIndicator && aiIndicator.textContent.trim() === 'c.ai') {
+        return;
+      }
+
       const pTag = chat.querySelector('p[node]');
       if (pTag && pTag.innerText.trim()) {
         chatContents.add(pTag.innerText.trim());
@@ -18,8 +28,9 @@
       if (divContent && !chatContents.has(divContent)) {
         chatContents.add(divContent);
       }
-    });
+    };
 
+    chatElements.forEach(extractChatContent);
     const topChatContents = Array.from(chatContents).slice(0, 10);
 
     if (topChatContents.length > 0) {
@@ -63,14 +74,22 @@
     position: 'fixed',
     bottom: '80px',
     right: '20px',
-    padding: '10px 20px',
-    backgroundColor: '#008CBA',
-    color: 'white',
-    fontSize: '16px',
+    padding: '12px 24px',
+    backgroundColor: '#007BFF',
+    color: '#FFFFFF',
+    fontSize: '18px',
     border: 'none',
-    borderRadius: '5px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
     cursor: 'pointer',
-    transition: 'all 0.3s ease, transform 0.2s',
+    transition: 'background-color 0.3s ease, transform 0.2s',
+    ':hover': {
+        backgroundColor: '#0056b3',
+        transform: 'scale(1.05)',
+    },
+    ':active': {
+        transform: 'scale(0.95)',
+    },
   });
   uploadButton.addEventListener('mouseenter', () => {
     uploadButton.style.transform = 'scale(1.1)';
